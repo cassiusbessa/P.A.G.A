@@ -1,8 +1,7 @@
 [workspace]
 members = [
     "contracts/electors",
-    "contracts/politicians",
-    "contracts/requests"
+    "contracts/paga",
 ]
 
 resolver = "3"

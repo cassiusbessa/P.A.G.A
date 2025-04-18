@@ -1,14 +1,31 @@
 use cosmwasm_std::StdError;
-use thiserror::Error;
+use core::fmt;
 
-#[derive(Error, Debug)]
+#[derive(Debug)]
 pub enum ContractError {
-    #[error("{0}")]
-    Std(#[from] StdError),
-
-    #[error("Elector already registered")]
+    Std(StdError),
     AlreadyRegistered {},
-
-    #[error("Method not implemented")]
     NotImplemented {},
+    NotRegistered {},
+    Unauthorized {},
+}
+
+// Implementação de Display para os erros
+impl fmt::Display for ContractError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ContractError::Std(e) => write!(f, "{}", e),
+            ContractError::AlreadyRegistered {} => write!(f, "Elector already registered"),
+            ContractError::NotImplemented {} => write!(f, "Method not implemented"),
+            ContractError::NotRegistered {} => write!(f, "Elector not registered"),
+            ContractError::Unauthorized {} => write!(f, "Unauthorized"),
+        }
+    }
+}
+
+// Permite usar `?` com StdError
+impl From<StdError> for ContractError {
+    fn from(err: StdError) -> Self {
+        ContractError::Std(err)
+    }
 }

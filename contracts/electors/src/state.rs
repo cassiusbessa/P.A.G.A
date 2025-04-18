@@ -1,18 +1,19 @@
 use cosmwasm_std::Addr;
 use cw_storage_plus::{Item, Map};
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 pub const OWNER: Item<Addr> = Item::new("owner");
+pub const PAGA_CONTRACT: Item<Addr> = Item::new("paga_contract");
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct Elector {
     pub address: Addr,
     pub balance: u128,
     pub follows: Follows,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema, Default)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Default)]
 pub struct Follows {
     pub vereador: Option<Addr>,
     pub deputado_estadual: Option<Addr>,

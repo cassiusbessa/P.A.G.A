@@ -2,31 +2,36 @@ use cosmwasm_std::{DepsMut, Env, MessageInfo, Response, Addr};
 use crate::state::{Elector, ELECTORS};
 use crate::errors::ContractError;
 use crate::msg::PoliticalRole;
+use crate::utils::only_paga;
+use alloc::string::ToString;
+
+
 
 /// Função que registra um novo eleitor, se ainda não existir
 pub fn execute_register(
     deps: DepsMut,
     _env: Env,
     info: MessageInfo,
+    elector_address: Addr,
 ) -> Result<Response, ContractError> {
-    let sender = info.sender;
+    only_paga(deps.as_ref(), &info)?;
 
     // Verifica se o eleitor já existe
-    if ELECTORS.has(deps.storage, &sender) {
+    if ELECTORS.has(deps.storage, &elector_address) {
         return Err(ContractError::AlreadyRegistered {});
     }
 
     let new_elector = Elector {
-        address: sender.clone(),
+        address: elector_address.clone(),
         balance: 0,
         follows: Default::default(), // todas as posições vazias
     };
 
-    ELECTORS.save(deps.storage, &sender, &new_elector)?;
+    ELECTORS.save(deps.storage, &elector_address, &new_elector)?;
 
     Ok(Response::new()
         .add_attribute("action", "register")
-        .add_attribute("elector", sender))
+        .add_attribute("elector", elector_address))
 }
 
 /// Função que faz o eleitor seguir um político (com base no cargo)
@@ -34,15 +39,19 @@ pub fn execute_follow(
     deps: DepsMut,
     _env: Env,
     info: MessageInfo,
+    elector_address: Addr,
     role: PoliticalRole,
     politician_address: Addr,
 ) -> Result<Response, ContractError> {
+
+    only_paga(deps.as_ref(), &info)?;
+
     let sender = info.sender;
 
     // Verifica se o eleitor está registrado
     let mut elector = ELECTORS
-        .load(deps.storage, &sender)
-        .map_err(|_| ContractError::AlreadyRegistered {})?;
+        .load(deps.storage, &elector_address)
+        .map_err(|_| ContractError::NotRegistered {})?;
 
     // Clona o endereço do político para usar várias vezes
     let politician = politician_address.clone();
@@ -64,6 +73,6 @@ pub fn execute_follow(
         .add_attribute("action", "follow")
         .add_attribute("follower", sender)
         .add_attribute("politician", politician_address)
-        .add_attribute("role", format!("{:?}", role)))
+        .add_attribute("role", role.to_string()))
 }
 

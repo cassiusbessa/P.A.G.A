@@ -1,17 +1,23 @@
+extern crate alloc;
+
 mod execute;
 mod state;
-mod msg;
+pub mod msg;
 mod errors;
 mod query;
+mod utils;
 
 
-use cosmwasm_std::{entry_point, DepsMut, Env, MessageInfo, Response, StdResult, Binary, Deps};
+use cosmwasm_std::{DepsMut, Env, MessageInfo, Response, StdResult, Binary, Deps};
+use state::PAGA_CONTRACT;
 use crate::msg::{ExecuteMsg, QueryMsg, InstantiateMsg};
 use crate::errors::ContractError;
 use crate::execute::{execute_register, execute_follow};
 use crate::state::OWNER;
 
-#[entry_point]
+
+
+#[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
     deps: DepsMut,
     _env: Env,
@@ -20,6 +26,8 @@ pub fn instantiate(
 ) -> StdResult<Response> {
     let owner_addr = deps.api.addr_validate(&msg.owner)?;
     OWNER.save(deps.storage, &owner_addr)?;
+    let paga_contract = deps.api.addr_validate(&msg.paga_contract)?;
+    PAGA_CONTRACT.save(deps.storage, &paga_contract)?;
 
     Ok(Response::new()
         .add_attribute("action", "instantiate")
@@ -27,7 +35,7 @@ pub fn instantiate(
 }
 
 
-#[entry_point]
+#[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(
     deps: DepsMut,
     env: Env,
@@ -35,11 +43,10 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::Register {} => execute_register(deps, env, info),
-        ExecuteMsg::FollowPolitician { role, politician_address } => execute_follow(deps, env, info, role, politician_address),
+        ExecuteMsg::Register { elector_address } =>  execute_register(deps, env, info, elector_address),
+
+        ExecuteMsg::FollowPolitician { elector_address, role, politician_address } => execute_follow(deps, env, info, elector_address, role, politician_address),
         ExecuteMsg::AddBalance { amount } => {
-            // Aqui você pode implementar a lógica para adicionar saldo
-            // Por enquanto, vamos apenas retornar um erro
             Err(ContractError::NotImplemented {})
         }
     }
@@ -47,7 +54,7 @@ pub fn execute(
 
 use crate::query::{query_elector, query_balance};
 
-#[entry_point]
+#[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(
     deps: Deps,
     _env: Env,
