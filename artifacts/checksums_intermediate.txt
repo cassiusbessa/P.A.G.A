@@ -1,0 +1,2 @@
+99e398abab59ab1dc98352afa4380498346c00d79a1b00874fc88c9b4aef7b83  /target/wasm32-unknown-unknown/release/electors.wasm
+c2decf31dffb863d077b58dd59b1eb3575445192263df2f54dac9b507dd393d7  /target/wasm32-unknown-unknown/release/paga.wasm

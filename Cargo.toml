@@ -4,4 +4,4 @@ members = [
     "contracts/paga",
 ]
 
-resolver = "3"
+resolver = "2"

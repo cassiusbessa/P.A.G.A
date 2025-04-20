@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ExecuteMsg",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "UpdateElectorsContract"
+      ],
+      "properties": {
+        "UpdateElectorsContract": {
+          "type": "object",
+          "required": [
+            "new_contract"
+          ],
+          "properties": {
+            "new_contract": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "RegisterElector"
+      ],
+      "properties": {
+        "RegisterElector": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 name = "paga"
 description = "Orchestration contract for managing the PAGA system"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 
 # Configurações para o crate lib.rs
 [lib]
@@ -17,7 +17,10 @@ cw-storage-plus = "1.1.0"      # Biblioteca para facilitar o gerenciamento de es
 serde = { version = "1.0", features = ["derive"] } # Serialização e desserialização
 schemars = "0.8.12"            # Geração de schema para contratos inteligentes
 thiserror = "1.0"              # Para tratamento de erros
-electors = { path = "../electors", features = ["library"] } # Dependência do contrato de eleitores 
+electors = { path = "../electors", features = ["library"] } # Dependência do contrato de eleitores
+
+[build-dependencies]
+cosmwasm-schema = "1.5.0"
 
 
 # Compilação de WebAssembly
