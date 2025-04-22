@@ -18,10 +18,10 @@ use crate::errors::ContractError;
 pub fn instantiate(
     deps: DepsMut,
     _env: Env,
-    _info: MessageInfo,
-    msg: InstantiateMsg,
+    info: MessageInfo,
+    _msg: InstantiateMsg,
 ) -> StdResult<Response> {
-    let owner = deps.api.addr_validate(&msg.owner)?;
+    let owner = deps.api.addr_validate(info.sender.as_str())?;
     OWNER.save(deps.storage, &owner)?;
 
     Ok(Response::new()

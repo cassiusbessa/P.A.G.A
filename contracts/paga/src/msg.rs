@@ -1,12 +1,9 @@
-use schemars::JsonSchema;
-use serde::{Deserialize, Serialize};
+use cosmwasm_schema::cw_serde;
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct InstantiateMsg {
-    pub owner: String, 
-}
+#[cw_serde]
+pub struct InstantiateMsg {}
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[cw_serde]
 pub enum ExecuteMsg {
     UpdateElectorsContract { new_contract: String },
     RegisterElector {},
