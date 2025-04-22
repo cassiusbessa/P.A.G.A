@@ -40,6 +40,6 @@ pub fn execute(
         ExecuteMsg::UpdateElectorsContract { new_contract } => {
             execute_update_electors_contract(deps, info, new_contract)
         }
-        ExecuteMsg::RegisterElector {} => execute_register_elector(deps, env, info),
+        ExecuteMsg::RegisterElector { } => execute_register_elector(deps, env, info)
     }
 }

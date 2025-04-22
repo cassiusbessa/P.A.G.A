@@ -22,6 +22,3 @@ cosmwasm-schema = "1.1.4"
 opt-level = "z"  # otimiza para tamanho
 lto = true       # link time optimization
 
-[features]
-library = [] # Para permitir que outros contratos usem este como uma biblioteca
-

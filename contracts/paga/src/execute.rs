@@ -1,6 +1,7 @@
+use crate::state::ELECTORS_CONTRACT;
 use crate::utils::only_owner;
-use crate::state:: ELECTORS_CONTRACT;
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Response, WasmMsg, to_json_binary};
+use serde_json::json;
 use crate::errors::ContractError;
 
 
@@ -14,7 +15,6 @@ pub fn execute_update_electors_contract(
 
     let new_addr = deps.api.addr_validate(&new_contract)?;
     ELECTORS_CONTRACT.save(deps.storage, &new_addr)?;
-
     Ok(Response::new()
         .add_attribute("action", "update_electors_contract")
         .add_attribute("new_electors_contract", new_addr))
@@ -26,20 +26,20 @@ pub fn execute_register_elector(
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
 
-    let electors_contract = ELECTORS_CONTRACT.load(deps.storage)?;
-
-    let msg = electors::msg::ExecuteMsg::Register {
-        elector_address: info.sender.clone(),
-    };
-
+    let msg = to_json_binary(&json!({
+        "register": {
+            "elector_address": info.sender.to_string()
+        }
+    }))?;
+    
     let exec = WasmMsg::Execute {
-        contract_addr: electors_contract.to_string(),
-        msg: to_json_binary(&msg)?,
+        contract_addr: ELECTORS_CONTRACT.load(deps.storage)?.to_string(),
+        msg,
         funds: vec![],
     };
-
+    
     Ok(Response::new()
         .add_message(exec)
         .add_attribute("action", "register_elector")
-        .add_attribute("caller", info.sender.clone()))
+        .add_attribute("elector_address", info.sender))
 }

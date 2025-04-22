@@ -2,13 +2,13 @@ extern crate alloc;
 
 mod execute;
 mod state;
-pub mod msg;
+mod msg;
 mod errors;
 mod query;
 mod utils;
 
 
-use cosmwasm_std::{DepsMut, Env, MessageInfo, Response, StdResult, Binary, Deps};
+use cosmwasm_std::{entry_point, DepsMut, Env, MessageInfo, Response, StdResult, Binary, Deps};
 use state::PAGA_CONTRACT;
 use crate::msg::{ExecuteMsg, QueryMsg, InstantiateMsg};
 use crate::errors::ContractError;
@@ -17,7 +17,7 @@ use crate::state::OWNER;
 
 
 
-#[cfg_attr(not(feature = "library"), entry_point)]
+#[entry_point]
 pub fn instantiate(
     deps: DepsMut,
     _env: Env,
@@ -35,7 +35,7 @@ pub fn instantiate(
 }
 
 
-#[cfg_attr(not(feature = "library"), entry_point)]
+#[entry_point]
 pub fn execute(
     deps: DepsMut,
     env: Env,
@@ -54,7 +54,7 @@ pub fn execute(
 
 use crate::query::{query_elector, query_balance};
 
-#[cfg_attr(not(feature = "library"), entry_point)]
+#[entry_point]
 pub fn query(
     deps: Deps,
     _env: Env,

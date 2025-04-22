@@ -67,7 +67,7 @@ pub fn execute_follow(
     }
 
     // Salva de volta o eleitor atualizado
-    ELECTORS.save(deps.storage, &sender, &elector)?;
+    ELECTORS.save(deps.storage, &elector_address, &elector)?;
 
     Ok(Response::new()
         .add_attribute("action", "follow")
