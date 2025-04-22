@@ -1,5 +1,6 @@
 [package]
 name = "electors"
+description = "A smart contract for managing electors and their balances."
 version = "0.1.0"
 edition = "2021"
 

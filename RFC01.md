@@ -53,7 +53,7 @@ Os contratos inteligentes seguem uma estrutura modular com os seguintes componen
 
 - `errors`: Gerenciamento de falhas de execução.
 - `execute`: Lógica principal dos contratos (ex: votar, distribuir).
-- `lib`: Funções auxiliares compartilhadas.
+- `lib`: principal função ("main") do contrato.
 - `msg`: Tipos de mensagens enviadas aos contratos.
 - `query`: Consultas de estado (ex: saldo de tokens).
 - `state`: Estruturas de dados persistentes, como votos e saldos.

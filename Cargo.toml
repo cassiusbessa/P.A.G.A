@@ -2,6 +2,7 @@
 members = [
     "contracts/electors",
     "contracts/paga",
+    "contracts/politicians",
 ]
 
 resolver = "2"
