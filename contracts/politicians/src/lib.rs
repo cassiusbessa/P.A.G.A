@@ -87,19 +87,19 @@ pub fn query(
     msg: QueryMsg,
 ) -> StdResult<Binary> {
     match msg {
-        QueryMsg::GetPromisesByPolitician { politician } => {
+        QueryMsg::PromisesByPolitician { politician } => {
             let promises = get_promises_by_politician(deps, politician)?;
             to_json_binary(&promises)
         }
-        QueryMsg::GetPromise { politician, promise_id } => {
+        QueryMsg::Promise { politician, promise_id } => {
             let promise = get_promise(deps, politician, promise_id)?;
             to_json_binary(&promise)
         }
-        QueryMsg::GetVotesByElector { elector } => {
+        QueryMsg::VotesByElector { elector } => {
             let votes = get_votes_by_elector(deps, elector)?;
             to_json_binary(&votes)
         }
-        QueryMsg::GetPolitician { address } => {
+        QueryMsg::Politician { address } => {
             let politician = get_politician(deps, address)?;
             to_json_binary(&politician)
         }

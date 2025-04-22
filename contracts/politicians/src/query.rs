@@ -4,7 +4,7 @@ use crate::state::{
 };
 
 
-pub fn get_promises_by_politician(deps: Deps, politician: String) -> StdResult<Vec<(u64)>> {
+pub fn get_promises_by_politician(deps: Deps, politician: String) -> StdResult<Vec<u64>> {
     let addr = deps.api.addr_validate(&politician)?;
     let promises = PROMISES_BY_POLITICIAN.may_load(deps.storage, &addr)?.unwrap_or_default();
     Ok(promises)

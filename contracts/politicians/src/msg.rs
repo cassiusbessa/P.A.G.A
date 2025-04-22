@@ -40,23 +40,23 @@ pub enum ExecuteMsg {
 #[cw_serde]
 pub enum QueryMsg {
     /// Retorna as promessas de um político
-    GetPromisesByPolitician {
+    PromisesByPolitician {
         politician: String,
     },
 
     /// Retorna os detalhes de uma promessa específica
-    GetPromise {
+    Promise {
         politician: String,
         promise_id: u64,
     },
 
     /// Retorna os votos de um eleitor
-    GetVotesByElector {
+    VotesByElector {
         elector: String,
     },
 
     /// Retorna os dados de um político
-    GetPolitician {
+    Politician {
         address: String,
     },
 }

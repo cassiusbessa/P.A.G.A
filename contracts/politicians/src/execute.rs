@@ -26,7 +26,7 @@ pub fn execute_register_politician(
     let politician = Politician {
         address: addr.clone(),
         balance: 0,
-        role: role.into(),
+        role,
     };
 
     POLITICIANS.save(deps.storage, &addr, &politician)?;
