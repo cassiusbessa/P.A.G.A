@@ -44,6 +44,11 @@ neutrond query wasm list-code --home ./data/test-1
 neutrond tx wasm instantiate {CODE_ID} '{INSTANTIATE_MSG}'   --from mywallet   --label "meu-contrato"   --fees 10000untrn   --gas auto --gas-adjustment 1.3   --keyring-backend test   --home ./data/test-1   --broadcast-mode sync   --chain-id test-1   --yes --no-admin
 ```
 
+# Resgatar o endereço do contrato a partir do hash da transação
+```bash
+neutrond query tx {TX_HASH} --home ./data/test-1
+```
+
 # Portas Padrões
 - 1317:1317 — the REST server;
 - 26657:26657 — the Tendermint RPC server;

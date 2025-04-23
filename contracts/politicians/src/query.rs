@@ -1,12 +1,36 @@
 use cosmwasm_std::{Deps, StdResult, Addr};
-use crate::state::{
-    PROMISES, PROMISES_BY_POLITICIAN, POLITICIANS, VOTES_BY_ELECTOR,
-};
+use crate::{msg::PromiseResponse, state::{
+    POLITICIANS, PROMISES, PROMISES_BY_POLITICIAN, VOTES_BY_ELECTOR
+}};
 
 
-pub fn get_promises_by_politician(deps: Deps, politician: String) -> StdResult<Vec<u64>> {
+pub fn get_promises_by_politician(deps: Deps, politician: String) -> StdResult<Vec<PromiseResponse>> {
     let addr = deps.api.addr_validate(&politician)?;
-    let promises = PROMISES_BY_POLITICIAN.may_load(deps.storage, &addr)?.unwrap_or_default();
+    
+    // Busca a lista de IDs
+    let promise_ids = PROMISES_BY_POLITICIAN
+        .may_load(deps.storage, &addr)?
+        .unwrap_or_default();
+
+    // Busca cada promessa completa com base no endereço + id
+    let mut promises = Vec::new();
+    for id in promise_ids {
+        if let Some(promise) = PROMISES.may_load(deps.storage, (&addr, id))? {
+            promises.push(PromiseResponse {
+                id: promise.id,
+                title: promise.title,
+                description: promise.description,
+                status: promise.status,
+                proof_url: promise.proof_url,
+                votes_for: promise.votes_for,
+                votes_against: promise.votes_against,
+                created_at: promise.created_at,
+                conclusion_date: promise.conclusion_date,
+                finished_at: promise.finished_at,
+            });
+        }
+    }
+
     Ok(promises)
 }
 

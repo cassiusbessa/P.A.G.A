@@ -4,8 +4,6 @@ use alloc::string::String;
 use cosmwasm_schema::cw_serde;
 
 
-// #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
-// #[serde(rename_all = "snake_case")]
 #[cw_serde]
 pub struct InstantiateMsg {
     pub owner: String, // 👈 Vamos usar String aqui, convertida depois para Addr
@@ -46,9 +44,9 @@ impl fmt::Display for PoliticalRole {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let role_str = match self {
             PoliticalRole::Vereador => "Vereador",
-            PoliticalRole::DeputadoEstadual => "DeputadoEstadual",
+            PoliticalRole::DeputadoEstadual => "Deputado Estadual",
             PoliticalRole::Governador => "Governador",
-            PoliticalRole::DeputadoFederal => "DeputadoFederal",
+            PoliticalRole::DeputadoFederal => "Deputado Federal",
             PoliticalRole::Senador => "Senador",
             PoliticalRole::Presidente => "Presidente",
         };

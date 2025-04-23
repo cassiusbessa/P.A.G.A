@@ -17,4 +17,7 @@ pub enum ContractError {
 
     #[error("Unauthorized")]
     Unauthorized {},
+
+    #[error("Elector not following politician")]
+    NotFollowingPolitician {},
 }

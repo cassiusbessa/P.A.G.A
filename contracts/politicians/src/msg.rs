@@ -1,6 +1,8 @@
 use cosmwasm_schema::cw_serde;
 use alloc::string::String;
 use crate::state::PoliticianRole;
+use crate::state::PromiseStatus;
+
 
 
 #[cw_serde]
@@ -59,5 +61,21 @@ pub enum QueryMsg {
     Politician {
         address: String,
     },
+}
+
+
+
+#[cw_serde]
+pub struct PromiseResponse {
+    pub id: u64,
+    pub title: String,
+    pub description: String,
+    pub status: PromiseStatus,
+    pub proof_url: Option<String>,
+    pub votes_for: u64,
+    pub votes_against: u64,
+    pub created_at: u64,
+    pub conclusion_date: Option<u64>,
+    pub finished_at: Option<u64>,
 }
 

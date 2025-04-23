@@ -1,15 +1,17 @@
 pub mod msg;
 pub mod state;
 pub mod utils;
-pub mod execute;
+pub mod execute_electors;
+pub mod execute_politicians;
 pub mod errors;
 
+use crate::execute_politicians::execute_update_politicians_contract;
 use cosmwasm_std::{
     entry_point, DepsMut, Env, MessageInfo, Response, StdResult};
 
 use crate::msg::{InstantiateMsg, ExecuteMsg};
 use crate::state::OWNER;
-use crate::execute::{execute_update_electors_contract, execute_register_elector};
+use crate::execute_electors::{execute_update_electors_contract, execute_register_elector};
 use crate::errors::ContractError;
 
 
@@ -37,9 +39,35 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::UpdateElectorsContract { new_contract } => {
-            execute_update_electors_contract(deps, info, new_contract)
-        }
-        ExecuteMsg::RegisterElector { } => execute_register_elector(deps, env, info)
+        ExecuteMsg::UpdateElectorsContract { new_contract } => execute_update_electors_contract(deps, info, new_contract),
+
+        ExecuteMsg::RegisterElector { } => execute_register_elector(deps, env, info),
+
+        ExecuteMsg::FollowPolitician { politician_address } => execute_electors::execute_follow_politician(deps, env, info, politician_address),
+
+        ExecuteMsg::UpdatePoliticiansContract { new_contract } => execute_update_politicians_contract(deps, info, new_contract),
+
+        ExecuteMsg::CreatePromise {
+            politician_address,
+            title,
+            description,
+            conclusion_date,
+        } => execute_politicians::execute_create_promise(
+            deps, env, info, politician_address, title, description, conclusion_date
+        ),
+
+        ExecuteMsg::VoteOnPromisse {
+            politician_address,
+            promise_id,
+            vote,
+        } => execute_politicians::execute_vote_on_promise(
+            deps, env, info, politician_address, promise_id, vote
+        ),
+        ExecuteMsg::RegisterPolitician {
+            role,
+        } => execute_politicians::execute_register_politician(
+            deps, env, info, role
+        ),
+        
     }
 }
