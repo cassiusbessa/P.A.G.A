@@ -58,8 +58,8 @@ impl fmt::Display for PoliticalRole {
 #[cw_serde]
 pub enum QueryMsg {
     /// Consulta os dados de um eleitor
-    GetElector { address: Addr },
+    Elector { address: Addr },
 
     /// Consulta apenas o saldo de um eleitor
-    GetBalance { address: Addr },
+    Balance { address: Addr },
 }

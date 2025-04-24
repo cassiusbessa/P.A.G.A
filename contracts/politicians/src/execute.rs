@@ -62,6 +62,7 @@ pub fn execute_create_promise(
 
     let promise = Promise {
         id: count + 1,
+        politician_address: addr.clone(),
         title,
         description,
         status: PromiseStatus::Pending,

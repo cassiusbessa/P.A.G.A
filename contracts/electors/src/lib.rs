@@ -61,8 +61,8 @@ pub fn query(
     msg: QueryMsg,
 ) -> StdResult<Binary> {
     match msg {
-        QueryMsg::GetElector { address } => query_elector(deps, address),
-        QueryMsg::GetBalance { address } => query_balance(deps, address),
+        QueryMsg::Elector { address } => query_elector(deps, address),
+        QueryMsg::Balance { address } => query_balance(deps, address),
     }
 }
 

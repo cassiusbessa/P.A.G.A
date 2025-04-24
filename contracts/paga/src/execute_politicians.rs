@@ -1,6 +1,7 @@
 use crate::msg::Elector;
 use crate::msg::PoliticianRole;
 use crate::state::POLITICIANS_CONTRACT;
+use crate::utils::load_promise;
 use crate::utils::{load_elector, only_owner};
 use cosmwasm_std::{to_json_binary, Addr, DepsMut, Env, MessageInfo, Response, WasmMsg};
 use serde_json::json;
@@ -51,7 +52,6 @@ pub fn execute_create_promise(
     deps: DepsMut,
     _env: Env,
     info: MessageInfo,
-    politician_address: String,
     title: String,
     description: String,
     conclusion_date: Option<u64>,
@@ -62,7 +62,7 @@ pub fn execute_create_promise(
     // Prepara a mensagem JSON para o contrato dos políticos
     let msg = to_json_binary(&json!({
         "create_promise": {
-            "politician_address": politician_address,
+            "politician_address": info.sender.to_string(),
             "title": title,
             "description": description,
             "conclusion_date": conclusion_date,
@@ -95,8 +95,13 @@ pub fn execute_vote_on_promise(
 
     let elector = load_elector(deps.as_ref(), &info.sender)?;
     let voter_address = info.sender.to_string();
-  
+    let politician_address_clone = politician_address.clone();
+    let promise = load_promise(deps.as_ref(), promise_id, politician_address_clone)?;
 
+    if promise.politician_address != politician_address {
+        return Err(ContractError::Unauthorized {});
+    }
+  
     // Verifica se o eleitor está seguindo o político
     let politician_addr = deps.api.addr_validate(&politician_address)?;
     if !is_elector_following_politician(&elector, &politician_addr) {

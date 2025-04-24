@@ -29,6 +29,7 @@ pub const POLITICIANS: Map<&Addr, Politician> = Map::new("politicians");
 #[cw_serde]
 pub struct Promise {
     pub id: u64,
+    pub politician_address: Addr,
     pub title: String,
     pub description: String,
     pub status: PromiseStatus,

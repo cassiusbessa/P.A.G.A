@@ -48,12 +48,11 @@ pub fn execute(
         ExecuteMsg::UpdatePoliticiansContract { new_contract } => execute_update_politicians_contract(deps, info, new_contract),
 
         ExecuteMsg::CreatePromise {
-            politician_address,
             title,
             description,
             conclusion_date,
         } => execute_politicians::execute_create_promise(
-            deps, env, info, politician_address, title, description, conclusion_date
+            deps, env, info, title, description, conclusion_date
         ),
 
         ExecuteMsg::VoteOnPromisse {

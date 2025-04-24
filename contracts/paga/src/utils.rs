@@ -1,6 +1,6 @@
 use cosmwasm_std::{to_json_binary, Addr, Deps, MessageInfo, StdError, StdResult};
 use serde_json::json;
-use crate::{msg::{Elector, Politician}, state::{ELECTORS_CONTRACT, OWNER, POLITICIANS_CONTRACT}};
+use crate::{msg::{Elector, Politician, Promise}, state::{ELECTORS_CONTRACT, OWNER, POLITICIANS_CONTRACT}};
 
 pub fn only_owner(deps: Deps, info: &MessageInfo) -> StdResult<()> {
     let owner = OWNER.load(deps.storage)?;
@@ -45,4 +45,28 @@ pub fn load_politician(
     ))?;
 
     Ok(politician)
+}
+
+pub fn load_promise(
+    deps: Deps,
+    promise_id: u64,
+    politician_address: String
+) -> StdResult<Promise> {
+    let query = to_json_binary(&json!({
+        "promise": {
+            "politician": politician_address,
+            "promise_id": promise_id
+        }
+    }))?;
+
+    let politician_contract = POLITICIANS_CONTRACT.load(deps.storage)?;
+
+    let promise: Promise = deps.querier.query(&cosmwasm_std::QueryRequest::Wasm(
+        cosmwasm_std::WasmQuery::Smart {
+            contract_addr: politician_contract.to_string(),
+            msg: query,
+        },
+    ))?;
+
+    Ok(promise)
 }

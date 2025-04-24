@@ -20,7 +20,6 @@ pub enum ExecuteMsg {
         role: PoliticianRole,
     },
     CreatePromise {
-        politician_address: String,
         title: String,
         description: String,
         conclusion_date: Option<u64>,
@@ -63,6 +62,28 @@ impl fmt::Display for PoliticianRole {
         };
         write!(f, "{}", role_str)
     }
+}
+
+#[cw_serde]
+pub struct Promise {
+    pub id: u64,
+    pub politician_address: Addr,
+    pub title: String,
+    pub description: String,
+    pub status: PromiseStatus,
+    pub proof_url: Option<String>,
+    pub votes_for: u64,
+    pub votes_against: u64,
+    pub created_at: u64,
+    pub conclusion_date: Option<u64>,
+    pub finished_at: Option<u64>,
+}
+
+#[cw_serde]
+pub enum PromiseStatus {
+    Pending,
+    Approved,
+    Rejected,
 }
 
 #[cw_serde]
