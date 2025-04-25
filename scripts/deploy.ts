@@ -7,9 +7,10 @@ import {
 } from "./commands/commands";
 import contractSchema from "./contract_schema";
 import { log } from "console";
-import { contract_path } from "./utils";
+import { contract_path, sleep } from "./utils";
 import { compileProject } from "./commands/compile_command";
 import { TContractName } from "./types/type";
+import { listContracts, listContractsByCodeId } from "./commands/contract";
 
 const storeContract = async (contractName: string) => {
   const storeCommand = getStoreCommand(contractName);
@@ -50,21 +51,6 @@ const instanciateContract = (contractName: string, codeId: string) => {
   log(`${tx}`);
 };
 
-const listContractsByCodeId = (codeId: string) => {
-  return execSync(getContractByCodeIdCommand(codeId), { encoding: "utf8" })
-    .split("- ")[1]
-    .split("\n")[0]
-    .trim();
-};
-
-const listContracts = () => {
-  log("listing contract addresses:");
-  for (const contract in contractSchema) {
-    const current_obj = contractSchema[contract as TContractName];
-    log(`${current_obj.name}: ${current_obj.address}`);
-  }
-};
-
 log("deploying contracts...");
 (async () => {
   compileProject();
@@ -73,10 +59,11 @@ log("deploying contracts...");
     const current_obj = contractSchema[contract as TContractName];
     sendContractToContainer(contract_path, contract);
     const codeId = await storeContract(current_obj.name);
-    instanciateContract(current_obj.name, codeId);
-    const contractAddress = listContractsByCodeId(codeId);
+    instanciateContract(contract, codeId);
+    await sleep(3000);
+    const contractAddress = await listContractsByCodeId(codeId);
     contractSchema[contract as TContractName].address = contractAddress;
   }
   log("Contracts deployed successfully!");
-  listContracts();
+  listContracts(contractSchema);
 })();
