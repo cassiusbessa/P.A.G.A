@@ -28,8 +28,8 @@ const contracts_wasm = {
     },
     address: "",
   },
-  "politician.wasm": {
-    name: "politician",
+  "politicians.wasm": {
+    name: "politicians",
     instanceProps: (data: any) => {
       return JSON.stringify({
         owner: "neutron1x8y240crs906dcs6l8hzqnwapy0ns05n7utcyq",
@@ -107,5 +107,15 @@ log("deploying contracts...");
 
     contracts_wasm[contract as keyof typeof contracts_wasm].address =
       contractAddress;
+  }
+
+  log("Contracts deployed successfully!");
+  log("Contracts addresses:");
+  for (const contract in contracts_wasm) {
+    const contractName =
+      contracts_wasm[contract as keyof typeof contracts_wasm].name;
+    const contractAddress =
+      contracts_wasm[contract as keyof typeof contracts_wasm].address;
+    log(`${contractName}: ${contractAddress}`);
   }
 })();

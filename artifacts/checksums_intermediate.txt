@@ -1,3 +1,3 @@
-11e9949df71cd86f80da73adbaafbb6810431ba6d672a131ee22a43c24a4ac72  /target/wasm32-unknown-unknown/release/electors.wasm
-09e96a27f77ddb7a9960bd1c5389568c1986b9134be61fd70ae0a4e16c7894be  /target/wasm32-unknown-unknown/release/paga.wasm
-b4b4dfa073d49fa17f6838cfec1dbc4bb14f8875e175234938d5b8e4ad8f034e  /target/wasm32-unknown-unknown/release/politicians.wasm
+30152323399fc258c41625cc76aa9516ba79da197fb96149c8230163282e3333  /target/wasm32-unknown-unknown/release/electors.wasm
+9a058408a6f798c2309c7f1dc94b2b5c87e8717e283cc7599d243ae6c02b705a  /target/wasm32-unknown-unknown/release/paga.wasm
+6c940c9ae8e26ad7391880f63b276dcd33cb7f3465d8eb830fb29b162e24d716  /target/wasm32-unknown-unknown/release/politicians.wasm
