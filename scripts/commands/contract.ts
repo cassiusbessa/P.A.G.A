@@ -3,13 +3,11 @@ import contractSchema from "../contract_schema";
 import { TContractName } from "../types/type";
 import { execSync } from "child_process";
 import { getContractByCodeIdCommand } from "./commands";
-import { sleep } from "../utils";
 
 export const listContractsByCodeId = async (codeId: string) => {
     const commandString = getContractByCodeIdCommand(codeId);
     const listCommand = execSync(commandString, { encoding: "utf8" })
 
-    console.log(listCommand);
     return listCommand
       .split("- ")[1]
       .split("\n")[0]
