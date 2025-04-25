@@ -1,55 +1,15 @@
 import { execSync } from "child_process";
 import {
+  getContractByCodeIdCommand,
   getDeploymentCommand,
   getStoreCommand,
-  optimizeCommand,
   sendContractToContainer,
-} from "./commands";
-
-const log = console.log;
-
-const contract_path = "artifacts/";
-
-const contracts_wasm = {
-    "paga.wasm": {
-        name: "paga",
-        instanceProps: (data: any) => {
-          return JSON.stringify({});
-        },
-        address: "",
-      },
-  "electors.wasm": {
-    name: "electors",
-    instanceProps: (data: any) => {
-      return JSON.stringify({
-        owner: "neutron1x8y240crs906dcs6l8hzqnwapy0ns05n7utcyq",
-        paga_contract: data["paga.wasm"].address,
-      });
-    },
-    address: "",
-  },
-  "politicians.wasm": {
-    name: "politicians",
-    instanceProps: (data: any) => {
-      return JSON.stringify({
-        owner: "neutron1x8y240crs906dcs6l8hzqnwapy0ns05n7utcyq",
-        paga_contract: data["paga.wasm"].address,
-      });
-    },
-    address: "",
-  },
-
-};
-
-log("compiling contracts...");
-execSync("cargo build --release --target wasm32-unknown-unknown", {
-  stdio: "ignore",
-});
-log("Compilation completed successfully!");
-
-log("optimizing contracts...");
-execSync(optimizeCommand, { stdio: "ignore" });
-log("Optimization completed successfully!");
+} from "./commands/commands";
+import contractSchema from "./contract_schema";
+import { log } from "console";
+import { contract_path } from "./utils";
+import { compileProject } from "./commands/compile_command";
+import { TContractName } from "./types/type";
 
 const storeContract = async (contractName: string) => {
   const storeCommand = getStoreCommand(contractName);
@@ -75,47 +35,48 @@ const storeContract = async (contractName: string) => {
   return codeId;
 };
 
+const instanciateContract = (contractName: string, codeId: string) => {
+  const instanceProps =
+    contractSchema[contractName as keyof typeof contractSchema].instanceProps(
+      contractSchema
+    );
+  const instantiateRes = execSync(
+    getDeploymentCommand(contractName, codeId, instanceProps),
+    { encoding: "utf8" }
+  );
+  log(instantiateRes);
+
+  const tx = instantiateRes.split("txhash: ")[1].split("\n")[0];
+  log(`${tx}`);
+};
+
+const listContractsByCodeId = (codeId: string) => {
+  return execSync(getContractByCodeIdCommand(codeId), { encoding: "utf8" })
+    .split("- ")[1]
+    .split("\n")[0]
+    .trim();
+};
+
+const listContracts = () => {
+  log("listing contract addresses:");
+  for (const contract in contractSchema) {
+    const current_obj = contractSchema[contract as TContractName];
+    log(`${current_obj.name}: ${current_obj.address}`);
+  }
+};
+
 log("deploying contracts...");
 (async () => {
-  for (const contract in contracts_wasm) {
-    const contractName =
-      contracts_wasm[contract as keyof typeof contracts_wasm].name;
+  compileProject();
 
+  for (const contract in contractSchema) {
+    const current_obj = contractSchema[contract as TContractName];
     sendContractToContainer(contract_path, contract);
-    const codeId = await storeContract(contractName);
-
-    console.log("codeId: ", codeId);
-
-    const instanceProps =
-      contracts_wasm[contract as keyof typeof contracts_wasm].instanceProps(
-        contracts_wasm
-      );
-    const deployRes = execSync(
-      getDeploymentCommand(contractName, codeId, instanceProps),
-      { encoding: "utf8" }
-    );
-    const deployTx = deployRes.split("txhash: ")[1].split("\n")[0];
-    log(`deploy tx : ${deployTx}`);
-    await new Promise((r) => setTimeout(r, 2000));
-    const contractAddress = execSync(
-      `docker exec neutron neutrond query wasm list-contract-by-code ${codeId} --home /opt/neutron/data/test-1`,
-      { encoding: "utf8" }
-    )
-      .split("- ")[1]
-      .split("\n")[0]
-      .trim();
-
-    contracts_wasm[contract as keyof typeof contracts_wasm].address =
-      contractAddress;
+    const codeId = await storeContract(current_obj.name);
+    instanciateContract(current_obj.name, codeId);
+    const contractAddress = listContractsByCodeId(codeId);
+    contractSchema[contract as TContractName].address = contractAddress;
   }
-
   log("Contracts deployed successfully!");
-  log("Contracts addresses:");
-  for (const contract in contracts_wasm) {
-    const contractName =
-      contracts_wasm[contract as keyof typeof contracts_wasm].name;
-    const contractAddress =
-      contracts_wasm[contract as keyof typeof contracts_wasm].address;
-    log(`${contractName}: ${contractAddress}`);
-  }
+  listContracts();
 })();

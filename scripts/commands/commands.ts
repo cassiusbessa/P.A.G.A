@@ -1,9 +1,5 @@
 import { execSync } from "child_process";
 
-export const optimizeCommand = `docker run --rm -v "$(pwd)":/code \
-  --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
-  --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
-  cosmwasm/rust-optimizer:0.14.0`;
 
 export const getStoreCommand = (contractName: string) => {
   return `docker exec neutron neutrond tx wasm store /contracts/${contractName}.wasm \
@@ -37,18 +33,29 @@ export const getDeploymentCommand = (
 `;
 };
 
+export const getContractMoveCommand = (
+    contractPath: string,
+    contractName: string,
+) => {
+    return `
+          docker exec neutron rm -rf /contracts && \
+          docker exec neutron mkdir -p /contracts && \
+          docker cp ${contractPath} neutron:/contracts/${contractName}`
+}
+
+export const getContractByCodeIdCommand = (codeId: string) => {
+    return `docker exec neutron neutrond query wasm list-contract-by-code ${codeId} --home /opt/neutron/data/test-1`
+}
+
 export const sendContractToContainer = (
   contract_path: string,
   contractName: string
 ) => {
   console.log(`sending ${contractName} to the container`);
   const contractPath = `${contract_path}${contractName}`;
-  execSync(
-    `
-          docker exec neutron rm -rf /contracts && \
-          docker exec neutron mkdir -p /contracts && \
-          docker cp ${contractPath} neutron:/contracts/${contractName}`,
+  execSync(getContractMoveCommand(contractPath, contractName),
     { stdio: "ignore" }
   );
   console.log(`contract ${contractName} sent successfully!`);
 };
+
