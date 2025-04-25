@@ -1,5 +1,6 @@
 import { execSync } from "child_process";
 import { log } from "console";
+import { isVerbose } from "../utils";
 
 export const compileCommand = `cargo build --release --target wasm32-unknown-unknown`;
 
@@ -10,13 +11,19 @@ export const optimizeCommand = `docker run --rm -v "$(pwd)":/code \
 
 export const compileContracts = () => {
   log("compiling contracts...");
-  execSync(compileCommand, { stdio: "ignore" });
+    if (isVerbose()){
+        log(`| >`, compileCommand);
+    }
+  execSync(compileCommand, { stdio: isVerbose() ? "inherit" : "ignore" });
   log("Compilation completed successfully!");
 };
 
 export const optimizeContracts = () => {
   log("optimizing contracts...");
-  execSync(optimizeCommand, { stdio: "ignore" });
+  if (isVerbose()){
+    log(`| >`, optimizeCommand);
+  }
+  execSync(optimizeCommand, { stdio: isVerbose() ? "inherit" : "ignore" });
   log("Optimization completed successfully!");
 };
 

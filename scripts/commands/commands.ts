@@ -1,5 +1,8 @@
 import { execSync } from "child_process";
+import { log } from "console";
+import { isVerbose } from "../utils";
 
+export const getCodeIdCommand = `docker exec neutron neutrond query wasm list-code --home /opt/neutron/data/test-1`;
 
 export const getStoreCommand = (contractName: string) => {
   return `docker exec neutron neutrond tx wasm store /contracts/${contractName}.wasm \
@@ -53,9 +56,13 @@ export const sendContractToContainer = (
 ) => {
   console.log(`sending ${contractName} to the container`);
   const contractPath = `${contract_path}${contractName}`;
-  execSync(getContractMoveCommand(contractPath, contractName),
-    { stdio: "ignore" }
-  );
+
+    const command = getContractMoveCommand(contractPath, contractName);
+    if (isVerbose()) {
+        log(`| >`, command);
+    }
+
+  execSync(command, { stdio: isVerbose() ? "inherit" : "ignore" });
   console.log(`contract ${contractName} sent successfully!`);
 };
 
