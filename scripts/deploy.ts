@@ -44,10 +44,28 @@ const instanciateContract = (contractName: string, codeId: string) => {
   }
 };
 
-const executeInitProcedure = (contractSchema: any) => {
+const executeInitProcedure = async (contractSchema: any) => {
     const pagaContract = contractSchema["paga.wasm"].address;
     const electorsContract = contractSchema["electors.wasm"].address;
     const politiciansContract = contractSchema["politicians.wasm"].address;
+
+    let command = `docker exec neutron neutrond tx wasm execute ${pagaContract} '{"update_electors_contract":{"new_contract": "${electorsContract}"}}' --from mywallet --fees 5000untrn --gas auto --gas-adjustment 1.3 --keyring-backend test --home /opt/neutron/data/test-1 --chain-id test-1 --yes`
+    if (isVerbose()) {
+        log(`| >: ${command}`);
+    }
+    execSync(
+        command,
+        { stdio: isVerbose() ? "inherit" : "ignore" }
+    )
+    await sleep(3000);
+    command = `docker exec neutron neutrond tx wasm execute ${pagaContract} '{"update_politicians_contract":{"new_contract": "${politiciansContract}"}}' --from mywallet --fees 5000untrn --gas auto --gas-adjustment 1.3 --keyring-backend test --home /opt/neutron/data/test-1 --chain-id test-1 --yes`
+    if (isVerbose()) {
+        log(`| >: ${command}`);
+    }
+    execSync(
+        command,
+        { stdio: isVerbose() ? "inherit" : "ignore" }
+    )
 
 }
 
@@ -76,5 +94,5 @@ log("deploying contracts...");
   log("All contracts deployed successfully!");
 
   log("executing commands init procedure...");
-  executeInitProcedure(contractSchema);
+  await executeInitProcedure(contractSchema);
 })();
