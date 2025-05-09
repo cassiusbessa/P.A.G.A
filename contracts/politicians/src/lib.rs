@@ -9,6 +9,7 @@ mod utils;
 
 
 use cosmwasm_std::{entry_point, DepsMut, Env, MessageInfo, Response, StdResult, Binary, Deps, to_json_binary};
+use query::get_politicians_by_role;
 use state::PAGA_CONTRACT;
 use crate::msg::{ExecuteMsg, QueryMsg, InstantiateMsg};
 use crate::errors::ContractError;
@@ -102,6 +103,10 @@ pub fn query(
         QueryMsg::Politician { address } => {
             let politician = get_politician(deps, address)?;
             to_json_binary(&politician)
+        },
+        QueryMsg::PoliticiansByRole { role } => {
+            let politicians = get_politicians_by_role(deps, role)?;
+            to_json_binary(&politicians)
         }
     }
 }

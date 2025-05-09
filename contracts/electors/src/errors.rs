@@ -8,6 +8,9 @@ pub enum ContractError {
     NotImplemented {},
     NotRegistered {},
     Unauthorized {},
+    InsufficientFunds {},
+    InvalidInvestment {},
+    RequestNotFound {},
 }
 
 // Implementação de Display para os erros
@@ -19,6 +22,9 @@ impl fmt::Display for ContractError {
             ContractError::NotImplemented {} => write!(f, "Method not implemented"),
             ContractError::NotRegistered {} => write!(f, "Elector not registered"),
             ContractError::Unauthorized {} => write!(f, "Unauthorized"),
+            ContractError::InsufficientFunds {} => write!(f, "Insufficient funds"),
+            ContractError::InvalidInvestment {} => write!(f, "Invalid investment amount must be greater than 10"),
+            ContractError::RequestNotFound {} => write!(f, "Request not found"),
         }
     }
 }

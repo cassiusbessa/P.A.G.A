@@ -26,6 +26,21 @@ pub enum ExecuteMsg {
     // Adiciona saldo (futuramente só pelo sistema de recompensa)
     AddBalance {
         amount: u128,
+        elector_address: Addr,
+    },
+
+    RequestFromPolitician {
+        elector_address: Addr,
+        politician_address: Addr,
+        title: String,
+        description: String,
+        investiment: u128,
+    },
+
+    InvestInRequest {
+        elector_address: Addr,
+        request_id: u128,
+        amount: u128,
     },
 }
 
@@ -62,4 +77,7 @@ pub enum QueryMsg {
 
     /// Consulta apenas o saldo de um eleitor
     Balance { address: Addr },
+
+    RequestsByPolitician { politician_address: Addr },
+    RequestsByElector { elector_address: Addr },
 }

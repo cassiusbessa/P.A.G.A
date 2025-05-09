@@ -61,6 +61,10 @@ pub enum QueryMsg {
     Politician {
         address: String,
     },
+
+    PoliticiansByRole {
+        role: PoliticianRole,
+    },
 }
 
 

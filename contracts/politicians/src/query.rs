@@ -51,3 +51,14 @@ pub fn get_politician(deps: Deps, address: String) -> StdResult<Option<crate::st
     let politician = POLITICIANS.may_load(deps.storage, &addr)?;
     Ok(politician)
 }
+
+pub fn get_politicians_by_role(deps: Deps, role: crate::state::PoliticianRole) -> StdResult<Vec<crate::state::Politician>> {
+    let mut politicians = Vec::new();
+    for politician in POLITICIANS.range(deps.storage, None, None, cosmwasm_std::Order::Ascending) {
+        let (_, p) = politician?;
+        if p.role == role {
+            politicians.push(p);
+        }
+    }
+    Ok(politicians)
+}

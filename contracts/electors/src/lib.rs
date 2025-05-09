@@ -9,10 +9,12 @@ mod utils;
 
 
 use cosmwasm_std::{entry_point, DepsMut, Env, MessageInfo, Response, StdResult, Binary, Deps};
+use execute::{execute_invest_in_request, execute_request_from_politician};
+use query::{query_requests_by_elector, query_requests_by_politician};
 use state::PAGA_CONTRACT;
 use crate::msg::{ExecuteMsg, QueryMsg, InstantiateMsg};
 use crate::errors::ContractError;
-use crate::execute::{execute_register, execute_follow};
+use crate::execute::{execute_register, execute_follow, execute_add_balance};
 use crate::state::OWNER;
 
 
@@ -46,9 +48,9 @@ pub fn execute(
         ExecuteMsg::Register { elector_address } =>  execute_register(deps, env, info, elector_address),
 
         ExecuteMsg::FollowPolitician { elector_address, role, politician_address } => execute_follow(deps, env, info, elector_address, role, politician_address),
-        ExecuteMsg::AddBalance { amount } => {
-            Err(ContractError::NotImplemented {})
-        }
+        ExecuteMsg::AddBalance { amount, elector_address } => execute_add_balance(deps, env, info, elector_address, amount),
+        ExecuteMsg::RequestFromPolitician { elector_address, politician_address, title, description, investiment } => execute_request_from_politician(deps, info, elector_address, politician_address, title, description, investiment),
+        ExecuteMsg::InvestInRequest { elector_address, request_id, amount } => execute_invest_in_request(deps, info, elector_address, request_id, amount),
     }
 }
 
@@ -63,6 +65,8 @@ pub fn query(
     match msg {
         QueryMsg::Elector { address } => query_elector(deps, address),
         QueryMsg::Balance { address } => query_balance(deps, address),
+        QueryMsg::RequestsByPolitician { politician_address } => query_requests_by_politician(deps, politician_address),
+        QueryMsg::RequestsByElector { elector_address } => query_requests_by_elector(deps, elector_address),
     }
 }
 
