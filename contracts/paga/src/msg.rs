@@ -31,6 +31,18 @@ pub enum ExecuteMsg {
         vote: bool,
     },
 
+    RequestFromPolitician {
+        politician_address: String,
+        title: String,
+        description: String,
+        investiment: u128,
+    },
+
+    InvestInRequest {
+        request_id: u128,
+        amount: u128,
+    },
+
 }
 
 #[cw_serde]

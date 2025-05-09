@@ -67,6 +67,22 @@ pub fn execute(
         } => execute_politicians::execute_register_politician(
             deps, env, info, role
         ),
+
+        ExecuteMsg::RequestFromPolitician {
+            politician_address,
+            title,
+            description,
+            investiment,
+        } => execute_electors::execute_request_from_politician(
+            deps, env, info, politician_address, title, description, investiment
+        ),
+
+        ExecuteMsg::InvestInRequest {
+            request_id,
+            amount,
+        } => execute_electors::execute_invest_in_request(
+            deps, env, info, request_id, amount
+        ),
         
     }
 }

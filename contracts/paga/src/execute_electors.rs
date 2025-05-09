@@ -73,3 +73,65 @@ pub fn execute_follow_politician(
         .add_attribute("role", politician.role.to_string())
         .add_attribute("politician_address", politician_address))
 }
+
+pub fn execute_request_from_politician(
+    deps: DepsMut,
+    _env: Env,
+    info: MessageInfo,
+    politician_address: String,
+    title: String,
+    description: String,
+    investiment: u128,
+) -> Result<Response, ContractError> {
+
+    let msg = to_json_binary(&json!({
+        "request_from_politician": {
+            "elector_address": info.sender.to_string(),
+            "politician_address": politician_address,
+            "title": title,
+            "description": description,
+            "investiment": investiment
+        }
+    }))?;
+    
+    let exec = WasmMsg::Execute {
+        contract_addr: ELECTORS_CONTRACT.load(deps.storage)?.to_string(),
+        msg,
+        funds: vec![],
+    };
+    
+    Ok(Response::new()
+        .add_message(exec)
+        .add_attribute("action", "request_from_politician")
+        .add_attribute("elector_address", info.sender)
+        .add_attribute("politician_address", politician_address))
+}
+
+pub fn execute_invest_in_request(
+    deps: DepsMut,
+    _env: Env,
+    info: MessageInfo,
+    request_id: u128,
+    amount: u128,
+) -> Result<Response, ContractError> {
+
+    let msg = to_json_binary(&json!({
+        "invest_in_request": {
+            "elector_address": info.sender.to_string(),
+            "request_id": request_id,
+            "amount": amount
+        }
+    }))?;
+    
+    let exec = WasmMsg::Execute {
+        contract_addr: ELECTORS_CONTRACT.load(deps.storage)?.to_string(),
+        msg,
+        funds: vec![],
+    };
+    
+    Ok(Response::new()
+        .add_message(exec)
+        .add_attribute("action", "invest_in_request")
+        .add_attribute("elector_address", info.sender)
+        .add_attribute("request_id", request_id.to_string()))
+}
