@@ -55,7 +55,7 @@ pub fn execute(
             deps, env, info, title, description, conclusion_date
         ),
 
-        ExecuteMsg::VoteOnPromisse {
+        ExecuteMsg::VoteOnPromise {
             politician_address,
             promise_id,
             vote,

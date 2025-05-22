@@ -25,7 +25,7 @@ pub enum ExecuteMsg {
         conclusion_date: Option<u64>,
     },
 
-    VoteOnPromisse {
+    VoteOnPromise {
         politician_address: String,
         promise_id: u64,
         vote: bool,

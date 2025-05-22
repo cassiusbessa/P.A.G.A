@@ -80,6 +80,7 @@ log("deploying contracts...");
 
   for (const contract in contractSchema) {
     const current_obj = contractSchema[contract as TContractName];
+    await sleep(5000);
     sendContractToContainer(contract_path, contract);
     const codeId = await storeContract(current_obj.name);
     instanciateContract(contract, codeId);
